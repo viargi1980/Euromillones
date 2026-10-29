@@ -9,7 +9,7 @@ from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
-WINDOW = 555
+WINDOW = 777
 
 # ==========================================
 # CARGAR CSV

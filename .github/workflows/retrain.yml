@@ -36,7 +36,7 @@ jobs:
 
       - name: App launcher
         run: |
-          python docs/generar_html.py
+          python docs/generar_web.py
 
       - name: Crear tag
         run: echo "TAG=models-${{ github.run_number }}" >> $GITHUB_ENV

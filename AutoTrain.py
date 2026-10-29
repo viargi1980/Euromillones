@@ -5,7 +5,7 @@ from pathlib import Path
 import pickle
 import json
 
-
+from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
@@ -268,6 +268,7 @@ estrellas_pred = sorted(
 # ==========================================
 
 prediccion = {
+    "fecha_generacion": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
     "numeros": numeros_pred,
     "estrellas": estrellas_pred,
     "top_numeros": [

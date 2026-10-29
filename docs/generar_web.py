@@ -1,130 +1,29 @@
 from pathlib import Path
-from datetime import datetime
 
-import pandas as pd
-import joblib
-
-WINDOW = 777
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# ===============================
-# CARGAR MODELOS
-# ===============================
-
-modelos_numeros = joblib.load(
-    BASE_DIR / "artifacts" / "modelos_numeros.pkl"
-)
-
-modelos_estrellas = joblib.load(
-    BASE_DIR / "artifacts" / "modelos_estrellas.pkl"
-)
-
-# ===============================
-# CARGAR DATOS
-# ===============================
-
-df = pd.read_csv(
-    BASE_DIR / "euromillions_limpio.csv"
-)
-
-rows = []
-
-for _, row in df.iterrows():
-
-    registro = {}
-
-    for n in range(1, 51):
-        registro[f"num_{n}"] = 0
-
-    for e in range(1, 13):
-        registro[f"star_{e}"] = 0
-
-    for n in [
-        row["n1"],
-        row["n2"],
-        row["n3"],
-        row["n4"],
-        row["n5"]
-    ]:
-        registro[f"num_{int(n)}"] = 1
-
-    for e in [
-        row["e1"],
-        row["e2"]
-    ]:
-        registro[f"star_{int(e)}"] = 1
-
-    rows.append(registro)
-
-bin_df = pd.DataFrame(rows)
-
-ultima_ventana = bin_df.iloc[-WINDOW:]
-
-fila = {}
-
-for n in range(1, 51):
-    fila[f"freq_num_{n}"] = ultima_ventana[f"num_{n}"].sum()
-
-for e in range(1, 13):
-    fila[f"freq_star_{e}"] = ultima_ventana[f"star_{e}"].sum()
-
-X_pred = pd.DataFrame([fila])
-
-# ===============================
-# PROBABILIDADES
-# ===============================
-
-probs_numeros = []
-
-for numero, modelo in modelos_numeros.items():
-
-    prob = modelo.predict_proba(X_pred)[0][1]
-
-    probs_numeros.append({
-        "numero": numero,
-        "probabilidad": round(float(prob), 3)
-    })
-
-probs_numeros.sort(
-    key=lambda x: x["probabilidad"],
-    reverse=True
-)
-
-probs_estrellas = []
-
-for estrella, modelo in modelos_estrellas.items():
-
-    prob = modelo.predict_proba(X_pred)[0][1]
-
-    probs_estrellas.append({
-        "estrella": estrella,
-        "probabilidad": round(float(prob), 3)
-    })
-
-probs_estrellas.sort(
-    key=lambda x: x["probabilidad"],
-    reverse=True
-)
-
-numeros = sorted(
-    [x["numero"] for x in probs_numeros[:5]]
-)
-
-estrellas = sorted(
-    [x["estrella"] for x in probs_estrellas[:2]]
-)
-
-fecha = datetime.now().strftime(
-    "%d/%m/%Y %H:%M:%S"
-)
-
-# ===============================
-# HTML
-# ===============================
-
-docs_dir = BASE_DIR / "docs"
-docs_dir.mkdir(exist_ok=True)
+prediccion = {
+    "fecha_generacion": "29/10/2026 17:09:58",
+    "numeros": [3, 6, 11, 14, 45],
+    "estrellas": [1, 7],
+    "top_numeros": [
+        {"numero": 3, "probabilidad": 0.5267},
+        {"numero": 11, "probabilidad": 0.5067},
+        {"numero": 14, "probabilidad": 0.4900},
+        {"numero": 6, "probabilidad": 0.4800},
+        {"numero": 45, "probabilidad": 0.4800},
+        {"numero": 17, "probabilidad": 0.4667},
+        {"numero": 49, "probabilidad": 0.4600},
+        {"numero": 7, "probabilidad": 0.4500},
+        {"numero": 28, "probabilidad": 0.4467},
+        {"numero": 32, "probabilidad": 0.4467}
+    ],
+    "top_estrellas": [
+        {"estrella": 7, "probabilidad": 0.5233},
+        {"estrella": 1, "probabilidad": 0.4867},
+        {"estrella": 3, "probabilidad": 0.4767},
+        {"estrella": 9, "probabilidad": 0.4700},
+        {"estrella": 4, "probabilidad": 0.4500}
+    ]
+}
 
 html = f"""
 <!DOCTYPE html>
@@ -132,25 +31,41 @@ html = f"""
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Euromillones IA</title>
 
 <style>
 
 body {{
-    font-family: Arial,sans-serif;
-    background:#f3f4f6;
-    text-align:center;
-    padding:30px;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    margin: 0;
+    padding: 30px;
+}}
+
+.container {{
+    max-width: 1100px;
+    margin: auto;
 }}
 
 .card {{
-    background:white;
-    max-width:1000px;
-    margin:auto;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.15);
+}}
+
+h1, h2 {{
+    text-align: center;
+}}
+
+.fecha {{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}}
+
+.numeros {{
+    text-align:center;
 }}
 
 .numero {{
@@ -158,12 +73,12 @@ body {{
     width:60px;
     height:60px;
     line-height:60px;
-    margin:5px;
     border-radius:50%;
     background:#2563eb;
     color:white;
     font-weight:bold;
     font-size:22px;
+    margin:5px;
 }}
 
 .estrella {{
@@ -171,27 +86,40 @@ body {{
     width:60px;
     height:60px;
     line-height:60px;
-    margin:5px;
     border-radius:50%;
     background:#f59e0b;
     color:white;
     font-weight:bold;
     font-size:22px;
+    margin:5px;
+}}
+
+.grid {{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+    margin-top:20px;
 }}
 
 table {{
     width:100%;
     border-collapse:collapse;
-    margin-top:20px;
 }}
 
-th,td {{
+th, td {{
     border:1px solid #ddd;
     padding:10px;
+    text-align:center;
 }}
 
 th {{
     background:#e5e7eb;
+}}
+
+@media (max-width: 768px) {{
+    .grid {{
+        grid-template-columns: 1fr;
+    }}
 }}
 
 </style>
@@ -200,32 +128,38 @@ th {{
 
 <body>
 
+<div class="container">
+
 <div class="card">
 
 <h1>🎲 Predicción Euromillones IA</h1>
 
-<p>
+<div class="fecha">
 📅 Última generación:
-<strong>{fecha}</strong>
-</p>
+<strong>{prediccion["fecha_generacion"]}</strong>
+</div>
 
 <h2>Combinación Recomendada</h2>
 
-<div>
+<div class="numeros">
 """
 
-for n in numeros:
+for n in prediccion["numeros"]:
     html += f'<span class="numero">{n}</span>'
 
-html += "</div><br><div>"
+html += "</div><br><div class='numeros'>"
 
-for e in estrellas:
+for e in prediccion["estrellas"]:
     html += f'<span class="estrella">⭐{e}</span>'
 
 html += """
 </div>
 
-<h2>Top 10 números más probables</h2>
+<div class="grid">
+
+<div>
+
+<h2>Top 10 números</h2>
 
 <table>
 <tr>
@@ -234,17 +168,21 @@ html += """
 </tr>
 """
 
-for item in probs_numeros[:10]:
+for item in prediccion["top_numeros"]:
 
     html += f"""
 <tr>
 <td>{item["numero"]}</td>
-<td>{item["probabilidad"]}</td>
+<td>{item["probabilidad"]:.2%}</td>
 </tr>
 """
 
 html += """
 </table>
+
+</div>
+
+<div>
 
 <h2>Top estrellas</h2>
 
@@ -255,12 +193,12 @@ html += """
 </tr>
 """
 
-for item in probs_estrellas[:5]:
+for item in prediccion["top_estrellas"]:
 
     html += f"""
 <tr>
 <td>{item["estrella"]}</td>
-<td>{item["probabilidad"]}</td>
+<td>{item["probabilidad"]:.2%}</td>
 </tr>
 """
 
@@ -269,15 +207,21 @@ html += """
 
 </div>
 
+</div>
+
+</div>
+
+</div>
+
 </body>
 </html>
 """
 
 with open(
-    docs_dir / "index.html",
+    "index.html",
     "w",
     encoding="utf-8"
 ) as f:
     f.write(html)
 
-print("✅ docs/index.html generado")
+print("✅ index.html generado")

@@ -36,7 +36,7 @@ jobs:
 
       - name: App launcher
         run: |
-          uvicorn app.app --reload
+          python docs/generar_html.py
 
       - name: Crear tag
         run: echo "TAG=models-${{ github.run_number }}" >> $GITHUB_ENV

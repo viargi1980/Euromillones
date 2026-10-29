@@ -34,6 +34,10 @@ jobs:
         run: |
           python AutoTrain.py
 
+      - name: App launcher
+        run: |
+          uvicorn app.app --reload
+
       - name: Crear tag
         run: echo "TAG=models-${{ github.run_number }}" >> $GITHUB_ENV
 

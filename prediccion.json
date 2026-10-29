@@ -2,76 +2,76 @@
     "numeros": [
         5,
         7,
-        19,
         31,
+        37,
         50
     ],
     "estrellas": [
         2,
-        8
+        3
     ],
     "top_numeros": [
         {
             "numero": 5,
-            "probabilidad": 0.58
+            "probabilidad": 0.59
         },
         {
             "numero": 50,
-            "probabilidad": 0.57
+            "probabilidad": 0.55
         },
         {
             "numero": 7,
-            "probabilidad": 0.5467
-        },
-        {
-            "numero": 31,
-            "probabilidad": 0.5333
-        },
-        {
-            "numero": 19,
-            "probabilidad": 0.5233
-        },
-        {
-            "numero": 11,
-            "probabilidad": 0.5067
+            "probabilidad": 0.5433
         },
         {
             "numero": 37,
-            "probabilidad": 0.4967
+            "probabilidad": 0.5233
         },
         {
-            "numero": 39,
-            "probabilidad": 0.4933
+            "numero": 31,
+            "probabilidad": 0.51
+        },
+        {
+            "numero": 19,
+            "probabilidad": 0.5033
         },
         {
             "numero": 3,
-            "probabilidad": 0.4833
+            "probabilidad": 0.4733
         },
         {
-            "numero": 27,
+            "numero": 39,
             "probabilidad": 0.4733
+        },
+        {
+            "numero": 4,
+            "probabilidad": 0.47
+        },
+        {
+            "numero": 36,
+            "probabilidad": 0.4667
         }
     ],
     "top_estrellas": [
         {
             "estrella": 2,
-            "probabilidad": 0.53
-        },
-        {
-            "estrella": 8,
-            "probabilidad": 0.51
+            "probabilidad": 0.5267
         },
         {
             "estrella": 3,
-            "probabilidad": 0.5033
+            "probabilidad": 0.52
         },
         {
-            "estrella": 4,
-            "probabilidad": 0.47
+            "estrella": 8,
+            "probabilidad": 0.4933
+        },
+        {
+            "estrella": 10,
+            "probabilidad": 0.4767
         },
         {
             "estrella": 6,
-            "probabilidad": 0.47
+            "probabilidad": 0.4667
         }
     ]
 }

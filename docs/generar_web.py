@@ -1,29 +1,14 @@
 from pathlib import Path
+import json
 
-prediccion = {
-    "fecha_generacion": "29/10/2026 17:09:58",
-    "numeros": [3, 6, 11, 14, 45],
-    "estrellas": [1, 7],
-    "top_numeros": [
-        {"numero": 3, "probabilidad": 0.5267},
-        {"numero": 11, "probabilidad": 0.5067},
-        {"numero": 14, "probabilidad": 0.4900},
-        {"numero": 6, "probabilidad": 0.4800},
-        {"numero": 45, "probabilidad": 0.4800},
-        {"numero": 17, "probabilidad": 0.4667},
-        {"numero": 49, "probabilidad": 0.4600},
-        {"numero": 7, "probabilidad": 0.4500},
-        {"numero": 28, "probabilidad": 0.4467},
-        {"numero": 32, "probabilidad": 0.4467}
-    ],
-    "top_estrellas": [
-        {"estrella": 7, "probabilidad": 0.5233},
-        {"estrella": 1, "probabilidad": 0.4867},
-        {"estrella": 3, "probabilidad": 0.4767},
-        {"estrella": 9, "probabilidad": 0.4700},
-        {"estrella": 4, "probabilidad": 0.4500}
-    ]
-}
+BASE_DIR = Path(__file__).resolve().parent
+
+with open(
+    BASE_DIR / "prediccion.json",
+    "r",
+    encoding="utf-8"
+) as f:
+    prediccion = json.load(f)
 
 html = f"""
 <!DOCTYPE html>
@@ -31,6 +16,7 @@ html = f"""
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Euromillones IA</title>
 
 <style>
@@ -52,20 +38,6 @@ body {{
     border-radius: 15px;
     padding: 25px;
     box-shadow: 0 2px 12px rgba(0,0,0,.15);
-}}
-
-h1, h2 {{
-    text-align: center;
-}}
-
-.fecha {{
-    text-align:center;
-    color:#666;
-    margin-bottom:25px;
-}}
-
-.numeros {{
-    text-align:center;
 }}
 
 .numero {{
@@ -94,13 +66,6 @@ h1, h2 {{
     margin:5px;
 }}
 
-.grid {{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:20px;
-    margin-top:20px;
-}}
-
 table {{
     width:100%;
     border-collapse:collapse;
@@ -116,16 +81,8 @@ th {{
     background:#e5e7eb;
 }}
 
-@media (max-width: 768px) {{
-    .grid {{
-        grid-template-columns: 1fr;
-    }}
-}}
-
 </style>
-
 </head>
-
 <body>
 
 <div class="container">
@@ -134,20 +91,20 @@ th {{
 
 <h1>🎲 Predicción Euromillones IA</h1>
 
-<div class="fecha">
+<p>
 📅 Última generación:
 <strong>{prediccion["fecha_generacion"]}</strong>
-</div>
+</p>
 
 <h2>Combinación Recomendada</h2>
 
-<div class="numeros">
+<div>
 """
 
 for n in prediccion["numeros"]:
     html += f'<span class="numero">{n}</span>'
 
-html += "</div><br><div class='numeros'>"
+html += "</div><br><div>"
 
 for e in prediccion["estrellas"]:
     html += f'<span class="estrella">⭐{e}</span>'
@@ -155,11 +112,7 @@ for e in prediccion["estrellas"]:
 html += """
 </div>
 
-<div class="grid">
-
-<div>
-
-<h2>Top 10 números</h2>
+<h2>Top 10 números más probables</h2>
 
 <table>
 <tr>
@@ -169,7 +122,6 @@ html += """
 """
 
 for item in prediccion["top_numeros"]:
-
     html += f"""
 <tr>
 <td>{item["numero"]}</td>
@@ -179,10 +131,6 @@ for item in prediccion["top_numeros"]:
 
 html += """
 </table>
-
-</div>
-
-<div>
 
 <h2>Top estrellas</h2>
 
@@ -194,7 +142,6 @@ html += """
 """
 
 for item in prediccion["top_estrellas"]:
-
     html += f"""
 <tr>
 <td>{item["estrella"]}</td>
@@ -209,16 +156,12 @@ html += """
 
 </div>
 
-</div>
-
-</div>
-
 </body>
 </html>
 """
 
 with open(
-    "index.html",
+    BASE_DIR / "index.html",
     "w",
     encoding="utf-8"
 ) as f:

@@ -3,6 +3,7 @@ name: Reentrenar Euromillones
 on:
   schedule:
     - cron: '0 3 * * 6'
+    - cron: '0 3 * * 3'
 
   workflow_dispatch:
 
@@ -51,16 +52,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit prediccion.json
-        run: |
-            git config user.name "viargi1980"
-            git config user.email "viargi1980@gmail.com"
-
-            git add prediccion.json
-
-            git diff --staged --quiet || git commit -m "Actualizar predicción"
-
-            git push
-
-    
-
+      

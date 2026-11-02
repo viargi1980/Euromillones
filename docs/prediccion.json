@@ -1,11 +1,11 @@
 {
-    "fecha_generacion": "30/10/2026 14:48:15",
+    "fecha_generacion": "02/11/2026 10:35:24",
     "numeros": [
         19,
+        21,
         23,
         38,
-        42,
-        44
+        42
     ],
     "estrellas": [
         2,
@@ -14,19 +14,23 @@
     "top_numeros": [
         {
             "numero": 19,
-            "probabilidad": 0.1154
+            "probabilidad": 0.1153
         },
         {
             "numero": 23,
-            "probabilidad": 0.1137
+            "probabilidad": 0.1136
         },
         {
             "numero": 42,
-            "probabilidad": 0.1115
+            "probabilidad": 0.1114
+        },
+        {
+            "numero": 21,
+            "probabilidad": 0.1113
         },
         {
             "numero": 38,
-            "probabilidad": 0.1113
+            "probabilidad": 0.1112
         },
         {
             "numero": 44,
@@ -37,42 +41,38 @@
             "probabilidad": 0.1109
         },
         {
-            "numero": 21,
-            "probabilidad": 0.1107
-        },
-        {
             "numero": 17,
             "probabilidad": 0.1103
         },
         {
             "numero": 26,
-            "probabilidad": 0.1102
+            "probabilidad": 0.1101
         },
         {
             "numero": 25,
-            "probabilidad": 0.1084
+            "probabilidad": 0.1083
         }
     ],
     "top_estrellas": [
         {
-            "estrella": 2,
-            "probabilidad": 0.2034
+            "estrella": 3,
+            "probabilidad": 0.2033
         },
         {
-            "estrella": 3,
-            "probabilidad": 0.2027
+            "estrella": 2,
+            "probabilidad": 0.2033
         },
         {
             "estrella": 8,
-            "probabilidad": 0.197
+            "probabilidad": 0.1969
         },
         {
             "estrella": 9,
-            "probabilidad": 0.1835
+            "probabilidad": 0.1834
         },
         {
             "estrella": 6,
-            "probabilidad": 0.1818
+            "probabilidad": 0.1817
         }
     ]
 }

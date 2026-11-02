@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 3 * * 6'
     - cron: '0 3 * * 3'
+    - cron: '0 5 * * 6'
+    - cron: '0 5 * * 3'
 
   workflow_dispatch:
 
@@ -24,32 +26,24 @@ jobs:
           python-version: "3.11"
 
       - name: Instalar dependencias
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Descargar sorteos
-        run: |
-          python main.py
+        run: python main.py
 
       - name: Reentrenar modelos
+        run: python AutoTrain.py
+
+      - name: Generar web
+        run: python docs/generar_web.py
+
+      - name: Publicar cambios
         run: |
-          python AutoTrain.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: App launcher
-        run: |
-          python docs/generar_web.py
+          git add docs/
+          git add prediccion.json
 
-      - name: Crear tag
-        run: echo "TAG=models-${{ github.run_number }}" >> $GITHUB_ENV
-
-      - name: Crear release y subir PKL
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ env.TAG }}
-          generate_release_notes: true
-          files: |
-            artifacts/*.pkl
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      
+          git diff --staged --quiet || git commit -m "Actualizar web Euromillones"
+          git push

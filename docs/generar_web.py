@@ -1,5 +1,69 @@
 from pathlib import Path
 import json
+import re
+import requests
+from bs4 import BeautifulSoup
+
+
+def obtener_bote():
+
+    try:
+
+        url = "https://www.euromillones.com.es/"
+
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 "
+                "(Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 "
+                "(KHTML, like Gecko) "
+                "Chrome/131.0 Safari/537.36"
+            )
+        }
+
+        r = requests.get(
+            url,
+            headers=headers,
+            timeout=20
+        )
+
+        r.raise_for_status()
+
+        html = r.text
+
+        patrones = [
+
+            r'Bote de\s+(\d+)\s+millones',
+
+            r'(\d+)\s+Millones de Euros',
+
+            r'(\d+)\s+millones de euros',
+
+            r'(\d+)\s+Millones de €'
+
+        ]
+
+        for patron in patrones:
+
+            match = re.search(
+                patron,
+                html,
+                re.IGNORECASE
+            )
+
+            if match:
+
+                return f"{match.group(1)} M€"
+
+        return "No disponible"
+
+    except Exception as e:
+
+        print("Error obteniendo bote:", e)
+
+        return "No disponible"
+
+
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -10,27 +74,35 @@ with open(
 ) as f:
     prediccion = json.load(f)
 
+bote = obtener_bote()
+
 html = f"""
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Euromillones IA</title>
 
 <style>
 
 :root {{
-    --bg1:#0f172a;
-    --bg2:#1e293b;
-    --card:#ffffff;
-    --primary:#2563eb;
-    --secondary:#4f46e5;
-    --star:#f59e0b;
-    --text:#111827;
-    --muted:#6b7280;
+
+    --bg:#0f172a;
+    --card:#111827;
+    --card2:#1e293b;
+    --text:#ffffff;
+    --muted:#94a3b8;
+    --accent:#3b82f6;
+    --gold:#fbbf24;
+    --green:#22c55e;
 }}
 
 * {{
@@ -40,178 +112,385 @@ html = f"""
 }}
 
 body {{
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(59,130,246,.35),
+            transparent 40%
+        ),
+
+        radial-gradient(
+            circle at 80% 30%,
+            rgba(168,85,247,.30),
+            transparent 40%
+        ),
+
+        radial-gradient(
+            circle at 50% 80%,
+            rgba(34,197,94,.25),
+            transparent 40%
+        ),
+
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(236,72,153,.25),
+            transparent 40%
+        ),
+
+        #0f172a;
+
+    background-attachment: fixed;
+
+    color: var(--text);
+
+    font-family:
+        Inter,
+        Segoe UI,
+        Arial,
+        sans-serif;
+
     min-height: 100vh;
-    padding: 30px;
+
+    overflow-x: hidden;
+
 }}
 
 .container {{
-    max-width: 1200px;
-    margin: auto;
+
+    max-width:900px;
+
+    margin:auto;
+
+    padding:40px 20px;
 }}
 
 .header {{
+
     text-align:center;
-    color:white;
-    margin-bottom:30px;
+
+    margin-bottom:45px;
 }}
 
 .header h1 {{
-    font-size:48px;
+
+    font-size:3rem;
+
     margin-bottom:10px;
+
+    font-weight:800;
+
+    background:
+        linear-gradient(
+            90deg,
+            #60a5fa,
+            #a78bfa,
+            #f472b6
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }}
 
 .header p {{
-    color:#cbd5e1;
-    font-size:18px;
+
+    color:var(--muted);
 }}
 
 .card {{
-    background:white;
+
+    background:
+        rgba(17,24,39,.70);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
     border-radius:24px;
-    padding:35px;
-    box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+    padding:40px;
+
+    animation:fadeIn .8s ease;
+
+    box-shadow:
+        0 20px 80px rgba(0,0,0,.35);
 }}
 
-.info-grid {{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-    margin-bottom:35px;
+@keyframes fadeIn {{
+
+    from {{
+
+        opacity:0;
+
+        transform:translateY(20px);
+    }}
+
+    to {{
+
+        opacity:1;
+
+        transform:translateY(0);
+    }}
 }}
 
-.info-box {{
-    background:#f8fafc;
-    border-left:5px solid var(--primary);
-    padding:20px;
-    border-radius:15px;
-}}
+.info {{
 
-.info-title {{
+    text-align:center;
+
     color:var(--muted);
-    font-size:14px;
-    margin-bottom:5px;
+
+    margin-bottom:25px;
 }}
 
-.info-value {{
-    font-size:24px;
-    font-weight:bold;
-    color:var(--text);
-}}
+.jackpot {{
 
-.section {{
-    margin-bottom:40px;
+    text-align:center;
+
+    padding:18px;
+
+    margin-bottom:35px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(34,197,94,.20),
+            rgba(59,130,246,.20)
+        );
+
+    backdrop-filter:
+        blur(10px);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    color:white;
+
+    font-size:1.2rem;
+
+    font-weight:700;
 }}
 
 .section-title {{
-    font-size:28px;
+
     margin-bottom:20px;
-    color:var(--text);
+
+    font-size:1.15rem;
 }}
 
 .numbers {{
+
     display:flex;
-    flex-wrap:wrap;
+
     justify-content:center;
-    gap:12px;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+
+    margin-bottom:40px;
 }}
 
 .numero {{
-    width:80px;
-    height:80px;
+
+    width:72px;
+
+    height:72px;
+
     border-radius:50%;
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--secondary)
-    );
-    color:white;
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
-    font-size:28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    font-size:1.5rem;
+
     font-weight:bold;
-    box-shadow:0 8px 20px rgba(37,99,235,.35);
+
+    color:white;
+
+    box-shadow:
+        0 10px 30px rgba(37,99,235,.35);
+
+    transition:.3s;
 }}
 
-.estrellas {{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:12px;
-    margin-top:15px;
+.numero:hover {{
+
+    background:var(--accent);
+
+    transform:translateY(-4px);
 }}
 
 .estrella {{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    background:linear-gradient(
-        135deg,
-        #f59e0b,
-        #f97316
-    );
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
+
+    min-width:90px;
+
+    text-align:center;
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f59e0b,
+            #fbbf24
+        );
+
+    color:#111827;
+
+    font-weight:700;
+
+    box-shadow:
+        0 8px 25px rgba(245,158,11,.25);
+}}
+
+.estrella {{
+
+    min-width:80px;
+
+    text-align:center;
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    background:var(--card2);
+
+    color:var(--gold);
+
     font-weight:bold;
-    box-shadow:0 8px 20px rgba(245,158,11,.35);
 }}
 
-table {{
-    width:100%;
-    border-collapse:collapse;
+.rank {{
+
+    margin-bottom:18px;
+}}
+
+.rank-label {{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:6px;
+}}
+
+.bar {{
+
+    height:8px;
+
+    background:var(--card2);
+
+    border-radius:999px;
+
     overflow:hidden;
-    border-radius:15px;
 }}
 
-thead {{
+.fill {{
+
+    height:100%;
+
+    border-radius:999px;
+
     background:linear-gradient(
         90deg,
-        var(--primary),
-        var(--secondary)
+        #2563eb,
+        #60a5fa
     );
-    color:white;
-}}
-
-th {{
-    padding:15px;
-    text-align:center;
-}}
-
-td {{
-    padding:14px;
-    text-align:center;
-    border-bottom:1px solid #e5e7eb;
-}}
-
-tbody tr:hover {{
-    background:#f8fafc;
 }}
 
 .footer {{
+
+    margin-top:35px;
+
     text-align:center;
-    margin-top:30px;
+
     color:var(--muted);
-    font-size:14px;
+
+    font-size:.9rem;
 }}
 
-@media (max-width:768px) {{
+@media(max-width:768px) {{
 
     .header h1 {{
-        font-size:36px;
+        font-size:2rem;
     }}
 
-    .numero,
-    .estrella {{
-        width:65px;
-        height:65px;
-        font-size:22px;
+    .numero {{
+
+        width:60px;
+
+        height:60px;
+
+        font-size:1.2rem;
     }}
 
+    .card {{
+        padding:25px;
+    }}
+}}
+
+body::before {{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(59,130,246,.35),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 80% 30%,
+            rgba(168,85,247,.30),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 60% 80%,
+            rgba(236,72,153,.20),
+            transparent 35%
+        );
+
+    filter:blur(80px);
+
+    z-index:-1;
+
+    animation:aurora 15s infinite alternate;
+}}
+
+@keyframes aurora {{
+
+    from {{
+        transform:translateX(-40px);
+    }}
+
+    to {{
+        transform:translateX(40px);
+    }}
 }}
 
 </style>
@@ -223,129 +502,99 @@ tbody tr:hover {{
 <div class="container">
 
 <div class="header">
+
     <h1>🎯 Euromillones IA</h1>
-    <p>Predicción basada en análisis estadístico e inteligencia artificial</p>
+
+    <p>
+        Predicción basada en Machine Learning
+    </p>
+
 </div>
 
 <div class="card">
 
-<div class="info-grid">
-
-<div class="info-box">
-<div class="info-title">Generación</div>
-<div class="info-value">{prediccion["fecha_generacion"]}</div>
+<div class="info">
+    Generado el {prediccion["fecha_generacion"]}
 </div>
 
-<div class="info-box">
-<div class="info-title">Números posibles</div>
-<div class="info-value">50</div>
+<div class="jackpot">
+    💰 Bote actual: {bote}
 </div>
-
-<div class="info-box">
-<div class="info-title">Estrellas posibles</div>
-<div class="info-value">12</div>
-</div>
-
-</div>
-
-<div class="section">
 
 <h2 class="section-title">
-🏆 Combinación Recomendada
+🏆 Combinación recomendada
 </h2>
 
 <div class="numbers">
 """
 
-for n in prediccion["numeros"]:
+for numero in prediccion["numeros"]:
     html += f"""
-<div class="numero">{n}</div>
-"""
+    <div class="numero">
+        {numero}
+    </div>
+    """
 
 html += """
 </div>
+
+<h2 class="section-title">
+⭐ Estrellas más probables
+</h2>
 
 <div class="estrellas">
 """
 
-for e in prediccion["estrellas"]:
+for estrella in prediccion["top_estrellas"][:2]:
+
     html += f"""
-<div class="estrella">⭐ {e}</div>
-"""
+    <div class="estrella">
+        ⭐ {estrella["estrella"]}
+    </div>
+    """
 
 html += """
 </div>
 
-</div>
-
-<div class="section">
-
 <h2 class="section-title">
-📈 Top 10 números más probables
+📈 Top números más probables
 </h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Número</th>
-<th>Probabilidad</th>
-</tr>
-</thead>
-
-<tbody>
 """
 
 for item in prediccion["top_numeros"]:
+
+    prob = item["probabilidad"] * 100
+
     html += f"""
-<tr>
-<td><strong>{item["numero"]}</strong></td>
-<td>{item["probabilidad"]:.2%}</td>
-</tr>
-"""
+    <div class="rank">
+
+        <div class="rank-label">
+
+            <span>
+                Número {item["numero"]}
+            </span>
+
+            <span>
+                {prob:.1f}%
+            </span>
+
+        </div>
+
+        <div class="bar">
+
+            <div
+                class="fill"
+                style="width:{prob:.1f}%"
+            ></div>
+
+        </div>
+
+    </div>
+    """
 
 html += """
-</tbody>
-
-</table>
-
-</div>
-
-<div class="section">
-
-<h2 class="section-title">
-⭐ Top estrellas
-</h2>
-
-<table>
-
-<thead>
-<tr>
-<th>Estrella</th>
-<th>Probabilidad</th>
-</tr>
-</thead>
-
-<tbody>
-"""
-
-for item in prediccion["top_estrellas"]:
-    html += f"""
-<tr>
-<td><strong>{item["estrella"]}</strong></td>
-<td>{item["probabilidad"]:.2%}</td>
-</tr>
-"""
-
-html += """
-</tbody>
-
-</table>
-
-</div>
-
 <div class="footer">
-Generado automáticamente por Euromillones IA
+    Euromillones IA
 </div>
 
 </div>
@@ -355,6 +604,7 @@ Generado automáticamente por Euromillones IA
 </body>
 </html>
 """
+print(obtener_bote())
 
 with open(
     BASE_DIR / "index.html",

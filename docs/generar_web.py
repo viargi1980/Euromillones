@@ -545,7 +545,7 @@ html += """
 <div class="estrellas">
 """
 
-for estrella in prediccion["top_estrellas"][:2]:
+for estrella in prediccion["top_estrellas"][:4]:
 
     html += f"""
     <div class="estrella">

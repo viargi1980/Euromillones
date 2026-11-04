@@ -1,11 +1,11 @@
 {
-    "fecha_generacion": "02/11/2026 11:21:04",
+    "fecha_generacion": "04/11/2026 07:37:21",
     "numeros": [
         19,
         21,
         23,
-        38,
-        42
+        42,
+        44
     ],
     "estrellas": [
         2,
@@ -18,31 +18,31 @@
         },
         {
             "numero": 23,
-            "probabilidad": 0.1136
+            "probabilidad": 0.1135
+        },
+        {
+            "numero": 44,
+            "probabilidad": 0.1117
         },
         {
             "numero": 42,
-            "probabilidad": 0.1114
+            "probabilidad": 0.1113
         },
         {
             "numero": 21,
-            "probabilidad": 0.1113
+            "probabilidad": 0.1112
         },
         {
             "numero": 38,
             "probabilidad": 0.1112
         },
         {
-            "numero": 44,
-            "probabilidad": 0.1112
-        },
-        {
             "numero": 50,
-            "probabilidad": 0.1109
+            "probabilidad": 0.1108
         },
         {
             "numero": 17,
-            "probabilidad": 0.1103
+            "probabilidad": 0.1102
         },
         {
             "numero": 26,
@@ -50,29 +50,29 @@
         },
         {
             "numero": 25,
-            "probabilidad": 0.1083
+            "probabilidad": 0.1082
         }
     ],
     "top_estrellas": [
         {
             "estrella": 3,
-            "probabilidad": 0.2033
+            "probabilidad": 0.2032
         },
         {
             "estrella": 2,
-            "probabilidad": 0.2033
+            "probabilidad": 0.2032
         },
         {
             "estrella": 8,
-            "probabilidad": 0.1969
+            "probabilidad": 0.1968
         },
         {
             "estrella": 9,
-            "probabilidad": 0.1834
+            "probabilidad": 0.1833
         },
         {
             "estrella": 6,
-            "probabilidad": 0.1817
+            "probabilidad": 0.1816
         }
     ]
 }

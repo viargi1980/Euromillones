@@ -9,7 +9,7 @@ from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
-WINDOW = 0
+WINDOW = 1000
 
 # ==========================================
 # CARGAR CSV
@@ -64,7 +64,7 @@ bin_df = pd.DataFrame(rows)
 # FEATURES CON VENTANA
 # ==========================================
 
-dataset = [1000]
+dataset = []
 
 for i in range(WINDOW, len(bin_df)):
 

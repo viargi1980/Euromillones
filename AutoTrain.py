@@ -64,7 +64,7 @@ bin_df = pd.DataFrame(rows)
 # FEATURES CON VENTANA
 # ==========================================
 
-dataset = []
+dataset = [1000]
 
 for i in range(WINDOW, len(bin_df)):
 
